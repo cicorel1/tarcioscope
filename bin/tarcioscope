@@ -1,0 +1,4 @@
+#!/bin/bash
+
+BINPATH=`dirname $0`
+pipenv run python "$BINPATH/../tarcioscope/main.py" $@
