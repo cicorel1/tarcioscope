@@ -1,0 +1,3 @@
+[run]
+source = tarcioscope
+omit = tarcioscope/test*
