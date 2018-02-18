@@ -10,17 +10,18 @@ FRAMERATE = 24
 VFLIP = True
 HFLIP = True
 
-
-class Camera(object):
-    def __init__(self):
+class PiCameraWrapper(object):
+    def __init__(self, meter_mode='spot', iso=200, exposure_mode='auto'):
         self.camera = picamera.PiCamera()
         self.camera.resolution = RESOLUTION
-        self.camera.meter_mode = METER_MODE
+        self.camera.meter_mode = meter_mode
         self.camera.framerate = FRAMERATE
-        self.camera.vflip = VFLIP # flips image rightside up, as needed
-        self.camera.hflip = HFLIP # flips image left-right, as needed
+        self.camera.exposure_mode = exposure_mode
+        self.camera.iso = iso
+        self.camera.vflip = VFLIP
+        self.camera.hflip = HFLIP
         self.camera.start_preview()
- 
+
     def start_streaming(self, output):
         print('Starting video capture')
         self.camera.start_recording(output, format='mjpeg', resize='HD')
@@ -45,7 +46,3 @@ class Camera(object):
         sleep(2)
 
         self.camera.capture(file_name, format='png')
-
-# camera = Camera()
-# camera.start_streaming('/tmp/myvideo.h264')
-# camera.snap()
