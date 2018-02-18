@@ -21,9 +21,9 @@ class Camera(object):
         self.camera.hflip = HFLIP # flips image left-right, as needed
         self.camera.start_preview()
  
-    def start_streaming(self, websocket):
+    def start_streaming(self, output):
         print('Starting video capture')
-        self.camera.start_recording(websocket.connection, format='mjpeg', resize='HD')
+        self.camera.start_recording(output, format='mjpeg', resize='HD')
         while True:
             self.camera.wait_recording(1)
 

@@ -10,15 +10,16 @@ class BroadcastOutput(object):
             'avconv',
             '-f', 'rawvideo',
             '-pix_fmt', 'yuv420p',
-            '-s', '%dx%d' % camera.resolution,
-            '-r', str(float(camera.framerate)),
+            '-s', '%dx%d' % camera.camera.resolution,
+            '-r', str(float(camera.camera.framerate)),
             '-i', '-',
             '-f', 'mpeg1video',
             '-b', '800k',
-            '-r', str(float(camera.framerate)),
+            '-r', str(float(camera.camera.framerate)),
             '-'],
             stdin=PIPE, stdout=PIPE, stderr=io.open(os.devnull, 'wb'),
             shell=False, close_fds=True)
+        camera.start_streaming(self)
 
     def write(self, b):
         self.converter.stdin.write(b)
