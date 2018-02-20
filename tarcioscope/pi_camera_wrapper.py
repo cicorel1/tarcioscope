@@ -24,9 +24,7 @@ class PiCameraWrapper(object):
 
     def start_streaming(self, output):
         print('Starting video capture')
-        self.camera.start_recording(output, format='mjpeg', resize='HD')
-        while True:
-            self.camera.wait_recording(1)
+        self.camera.start_recording(output, format='yuv')
 
     def stop_streaming(self):
         print('Stopping video capture')
