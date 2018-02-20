@@ -11,11 +11,14 @@ class StreamingWebSocket(WebSocket):
 
     def __init__(self):
         super(StreamingWebSocket, self).__init__()
-        camera = PiCameraWrapper()
-        output = BroadcastOutput()
+        self.picamera = PiCameraWrapper()
+        self.output = BroadcastOutput(self.picamera.camera)
+        self.broadcast_thread = BroadcastThread(self.output.converter, cherrypy.engine)
 
-    def received_message(self, message):
-        BroadcastThread(output.converter, cherrypy.engine)
+    # def received_message(self, message):
+    #     BroadcastThread(self.output.converter, cherrypy.engine)
 
     def opened(self):
         self.send(self.JSMPEG_HEADER.pack(self.JSMPEG_MAGIC, 320, 240), binary=True)
+        self.broadcast_thread.start()
+        self.picamera.start_streaming(self.output)

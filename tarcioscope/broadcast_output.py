@@ -19,7 +19,6 @@ class BroadcastOutput(object):
             '-'],
             stdin=PIPE, stdout=PIPE, stderr=io.open(os.devnull, 'wb'),
             shell=False, close_fds=True)
-        camera.start_streaming(self)
 
     def write(self, b):
         self.converter.stdin.write(b)
