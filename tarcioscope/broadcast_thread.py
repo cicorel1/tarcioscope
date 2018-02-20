@@ -1,4 +1,6 @@
-class BroadcastThread
+from threading import Thread
+
+class BroadcastThread(Thread):
     def __init__(self, converter, ws_engine):
         super(BroadcastThread, self).__init__()
         self.converter = converter

@@ -1,5 +1,6 @@
 import cherrypy
 
+from streaming_websocket import StreamingWebSocket
 from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
 
 cherrypy.config.update({ 'server.socket_host': '0.0.0.0', 'server.socket_port': 9000 })
