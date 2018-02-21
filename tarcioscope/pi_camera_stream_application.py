@@ -1,3 +1,5 @@
+from struct import Struct
+
 from pi_camera_wrapper import PiCameraWrapper
 from broadcast_output import BroadcastOutput
 from broadcast_thread import BroadcastThread

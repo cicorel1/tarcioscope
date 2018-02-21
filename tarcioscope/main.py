@@ -1,6 +1,3 @@
-from pprint import pprint
-from struct import Struct
-
 from pi_camera_stream_application import PiCameraStreamApplication
 
 if __name__ == "__main__":
