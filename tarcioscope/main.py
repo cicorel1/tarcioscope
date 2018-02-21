@@ -9,32 +9,34 @@ class App(object):
         cherrypy.log("Handler created: %s" % repr(cherrypy.request.ws_handler))
 
 if __name__ == '__main__':
-    import logging
-
-    from ws4py import configure_logger
-    configure_logger(level=logging.DEBUG)
-
-    cherrypy.config.update({ 'server.socket_host': '0.0.0.0', 'server.socket_port': 9000 })
-    WebSocketPlugin(cherrypy.engine).subscribe()
-    cherrypy.tools.websocket = WebSocketTool()
-
-    cherrypy.quickstart(App(), '/', config={
-        '/ws': {
-            'tools.websocket.on': True,
-            'tools.websocket.handler_cls': StreamingWebSocket
-            }
-        }
-    )
-
     from pi_camera_wrapper import PiCameraWrapper
     from broadcast_output import BroadcastOutput
     from broadcast_thread import BroadcastThread
 
+    import logging
+
+    from ws4py import configure_logger
+ 
     try:
         picamera = PiCameraWrapper()
         output = BroadcastOutput(picamera)
         broadcast_thread = BroadcastThread(output.converter)
         picamera.start_streaming(output)
+
+        configure_logger(level=logging.DEBUG)
+
+        cherrypy.config.update({ 'server.socket_host': '0.0.0.0', 'server.socket_port': 9000 })
+        WebSocketPlugin(cherrypy.engine).subscribe()
+        cherrypy.tools.websocket = WebSocketTool()
+
+        cherrypy.quickstart(App(), '/', config={
+            '/ws':
+                'tools.websocket.on': True,
+                'tools.websocket.handler_cls': StreamingWebSocket
+                }
+            }
+        )
+
         broadcast_thread.start()
 
         while True:
@@ -46,3 +48,5 @@ if __name__ == '__main__':
         picamera.stop_streaming()
         print('Waiting for broadcast thread to finish')
         broadcast_thread.join()
+
+

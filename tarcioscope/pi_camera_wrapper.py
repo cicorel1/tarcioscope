@@ -21,7 +21,6 @@ class PiCameraWrapper(object):
         self.camera.vflip = VFLIP
         self.camera.hflip = HFLIP
         self.camera.start_preview()
-        sleep(1)
 
     def start_streaming(self, output):
         print('Starting video capture')
