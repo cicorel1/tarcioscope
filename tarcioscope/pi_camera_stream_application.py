@@ -1,4 +1,5 @@
 from struct import Struct
+from geventwebsocket import WebSocketApplication
 
 from pi_camera_wrapper import PiCameraWrapper
 from broadcast_output import BroadcastOutput
