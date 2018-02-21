@@ -1,14 +1,12 @@
 import picamera
 
-from struct import Struct
-from time import sleep, time
 from datetime import datetime
 
 METER_MODE = 'spot'
 RESOLUTION = (640, 480)
 FRAMERATE = 24
-VFLIP = True
-HFLIP = True
+VFLIP = False
+HFLIP = False
 
 class PiCameraWrapper(object):
     def __init__(self, resolution=RESOLUTION, meter_mode='spot', iso=200, exposure_mode='auto'):

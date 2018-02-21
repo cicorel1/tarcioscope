@@ -1,3 +1,4 @@
+from time import sleep
 from struct import Struct
 from geventwebsocket import WebSocketApplication
 
@@ -11,28 +12,34 @@ FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 
 class PiCameraStreamApplication(WebSocketApplication):
+    def __init__(self):
+        super(PiCameraStreamApplication, self).__init__()
+        self.picamera = PiCameraWrapper(resolution=(FRAME_WIDTH, FRAME_HEIGHT))
+        self.output = BroadcastOutput(picamera)
+        self.broadcast_thread = BroadcastThread(output.converter, self.ws)
+
     def on_open(self):
         jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, FRAME_WIDTH, FRAME_HEIGHT)
         print("Connection opened. Sending header '%s'" % jsmpeg_header)
         self.ws.send(jsmpeg_header)
 
         try:
-            picamera = PiCameraWrapper(resolution=(FRAME_WIDTH, FRAME_HEIGHT))
-            output = BroadcastOutput(picamera)
-            broadcast_thread = BroadcastThread(output.converter, self.ws)
-            picamera.start_streaming(output)
-
-            broadcast_thread.start()
+            sleep(1) # camera warm-up
+            self.picamera.start_streaming(self.output)
+            self.broadcast_thread.start()
 
             while True:
-                picamera.camera.wait_recording(1)
+                self.picamera.camera.wait_recording(1)
         except KeyboardInterrupt:
             pass
         finally:
             print('Stopping recording')
-            picamera.stop_streaming()
+            self.picamera.stop_streaming()
             print('Waiting for broadcast thread to finish')
-            broadcast_thread.join()
+            self.broadcast_thread.join()
 
     def on_close(self, reason):
-        print(reason)
+        print('Stopping recording')
+        self.picamera.stop_streaming()
+        print('Waiting for broadcast thread to finish')
+        self.broadcast_thread.join()

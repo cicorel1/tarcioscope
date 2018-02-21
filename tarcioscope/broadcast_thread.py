@@ -1,5 +1,3 @@
-import cherrypy
-
 from threading import Thread
 
 class BroadcastThread(Thread):
