@@ -11,9 +11,9 @@ VFLIP = True
 HFLIP = True
 
 class PiCameraWrapper(object):
-    def __init__(self, meter_mode='spot', iso=200, exposure_mode='auto'):
+    def __init__(self, resolution=RESOLUTION, meter_mode='spot', iso=200, exposure_mode='auto'):
         self.camera = picamera.PiCamera()
-        self.camera.resolution = RESOLUTION
+        self.camera.resolution = resolution
         self.camera.meter_mode = meter_mode
         self.camera.framerate = FRAMERATE
         self.camera.exposure_mode = exposure_mode
