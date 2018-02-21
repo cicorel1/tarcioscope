@@ -3,9 +3,8 @@ import os
 from setuptools import setup, find_packages
 
 requires = [
-    'cherrypy',
+    'gevent-websocket',
     'picamera',
-    'ws4py'
 ]
 
 tests_require = [

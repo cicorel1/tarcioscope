@@ -1,52 +1,46 @@
-import cherrypy
+from pprint import pprint
+from struct import Struct
 
-from streaming_websocket import StreamingWebSocket
-from ws4py.server.cherrypyserver import WebSocketPlugin, WebSocketTool
+JSMPEG_MAGIC = b'jsmp'
+JSMPEG_HEADER = Struct('>4sHH')
 
-class App(object):
-    @cherrypy.expose
-    def ws(self):
-        cherrypy.log("Handler created: %s" % repr(cherrypy.request.ws_handler))
+if __name__ == "__main__":
+    from geventwebsocket import WebSocketServer, WebSocketApplication, Resource
 
-if __name__ == '__main__':
-    from pi_camera_wrapper import PiCameraWrapper
-    from broadcast_output import BroadcastOutput
-    from broadcast_thread import BroadcastThread
+    class PiCameraStreamApplication(WebSocketApplication):
+        from pi_camera_wrapper import PiCameraWrapper
+        from broadcast_output import BroadcastOutput
+        from broadcast_thread import BroadcastThread
 
-    import logging
+        def on_open(self):
+            jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, 640, 480)
+            print("Connection opened. Sending header '%s'" % jsmpeg_header)
+            self.ws.send(jsmpeg_header)
 
-    from ws4py import configure_logger
- 
-    try:
-        picamera = PiCameraWrapper()
-        output = BroadcastOutput(picamera)
-        broadcast_thread = BroadcastThread(output.converter)
-        picamera.start_streaming(output)
+            try:
+                picamera = PiCameraWrapper()
+                output = BroadcastOutput(picamera)
+                broadcast_thread = BroadcastThread(output.converter)
+                picamera.start_streaming(output)
 
-        configure_logger(level=logging.DEBUG)
+                broadcast_thread.start()
 
-        cherrypy.config.update({ 'server.socket_host': '0.0.0.0', 'server.socket_port': 9000 })
-        WebSocketPlugin(cherrypy.engine).subscribe()
-        cherrypy.tools.websocket = WebSocketTool()
+                # while True:
+                #     picamera.camera.wait_recording(1)
+            except KeyboardInterrupt:
+                pass
+            finally:
+                print('Stopping recording')
+                picamera.stop_streaming()
+                print('Waiting for broadcast thread to finish')
+                broadcast_thread.join()
 
-        cherrypy.quickstart(App(), '/', config={
-            '/ws':
-                'tools.websocket.on': True,
-                'tools.websocket.handler_cls': StreamingWebSocket
-                }
-            }
-        )
+        def on_close(self, reason):
+            print(reason)
 
-        broadcast_thread.start()
-
-        while True:
-            picamera.camera.wait_recording(1)
-    except KeyboardInterrupt:
-        pass
-    finally:
-        print('Stopping recording')
-        picamera.stop_streaming()
-        print('Waiting for broadcast thread to finish')
-        broadcast_thread.join()
-
+    websocket_server = WebSocketServer(('', 9000), Resource([
+        ('/', PiCameraStreamApplication)
+    ]))
+    pprint(vars(websocket_server))
+    websocket_server.serve_forever()
 
