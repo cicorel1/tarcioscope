@@ -8,8 +8,8 @@ from broadcast_greenlet import BroadcastGreenlet
 
 JSMPEG_MAGIC = b'jsmp'
 JSMPEG_HEADER = Struct('>4sHH')
-FRAME_WIDTH = 640
-FRAME_HEIGHT = 480
+FRAME_WIDTH = 320
+FRAME_HEIGHT = 240
 
 class PiCameraStreamApplication(WebSocketApplication):
     def __init__(self, *args, **kwargs):
@@ -27,6 +27,7 @@ class PiCameraStreamApplication(WebSocketApplication):
             sleep(1) # camera warm-up
             self.picamera.start_streaming(self.output)
             self.broadcast_greenlet.start()
+            self.broadcast_greenlet.join()
 
             while True:
                 self.picamera.camera.wait_recording(1)
@@ -35,11 +36,7 @@ class PiCameraStreamApplication(WebSocketApplication):
         finally:
             print('Stopping recording')
             self.picamera.stop_streaming()
-            print('Waiting for broadcast thread to finish')
-            self.broadcast_greenlet.join()
 
     def on_close(self, reason):
         print('Stopping recording')
         self.picamera.stop_streaming()
-        print('Waiting for broadcast thread to finish')
-        self.broadcast_greenlet.join()
