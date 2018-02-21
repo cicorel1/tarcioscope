@@ -12,11 +12,11 @@ FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 
 class PiCameraStreamApplication(WebSocketApplication):
-    def __init__(self):
-        super(PiCameraStreamApplication, self).__init__()
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.picamera = PiCameraWrapper(resolution=(FRAME_WIDTH, FRAME_HEIGHT))
-        self.output = BroadcastOutput(picamera)
-        self.broadcast_thread = BroadcastThread(output.converter, self.ws)
+        self.output = BroadcastOutput(self.picamera)
+        self.broadcast_thread = BroadcastThread(self.output.converter, self.ws)
 
     def on_open(self):
         jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, FRAME_WIDTH, FRAME_HEIGHT)

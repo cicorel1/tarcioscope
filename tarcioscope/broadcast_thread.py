@@ -2,7 +2,7 @@ from threading import Thread
 
 class BroadcastThread(Thread):
     def __init__(self, converter, websocket):
-        super(BroadcastThread, self).__init__()
+        super().__init__()
         self.converter = converter
         self.websocket = websocket
 
