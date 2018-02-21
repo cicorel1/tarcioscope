@@ -1,3 +1,5 @@
+import cherrypy
+
 from threading import Thread
 
 class BroadcastThread(Thread):
@@ -11,7 +13,8 @@ class BroadcastThread(Thread):
             while True:
                 buf = self.converter.stdout.read(512)
                 if buf:
-                    self.websocket.manager.broadcast(buf, binary=True)
+                    cherrypy.engine.publish('websocket-broadcast', buf, binary=True)
+                    #self.websocket.send(buf, binary=True)
                 elif self.converter.poll() is not None:
                     break
         finally:

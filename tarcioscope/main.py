@@ -23,10 +23,10 @@ class App(object):
         picamera = PiCameraWrapper()
         output = BroadcastOutput(picamera)
         broadcast_thread = BroadcastThread(output.converter, cherrypy.request.ws_handler)
-        broadcast_thread.start()
         picamera.start_streaming(output)
-        while True:
-            picamera.camera.wait_recording(1)
+        broadcast_thread.start()
+        #while True:
+        #    picamera.camera.wait_recording(1)
 
 
 cherrypy.quickstart(App(), '/', config={'/ws': {'tools.websocket.on': True,

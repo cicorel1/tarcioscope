@@ -5,7 +5,7 @@ from time import sleep, time
 from datetime import datetime
 
 METER_MODE = 'spot'
-RESOLUTION = 'FHD'
+RESOLUTION = (640, 480)
 FRAMERATE = 24
 VFLIP = True
 HFLIP = True
@@ -21,6 +21,7 @@ class PiCameraWrapper(object):
         self.camera.vflip = VFLIP
         self.camera.hflip = HFLIP
         self.camera.start_preview()
+        sleep(1)
 
     def start_streaming(self, output):
         print('Starting video capture')
