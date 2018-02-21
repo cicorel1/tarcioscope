@@ -20,13 +20,13 @@ if __name__ == "__main__":
             try:
                 picamera = PiCameraWrapper()
                 output = BroadcastOutput(picamera)
-                broadcast_thread = BroadcastThread(output.converter)
+                broadcast_thread = BroadcastThread(output.converter, self.ws)
                 picamera.start_streaming(output)
 
                 broadcast_thread.start()
 
-                # while True:
-                #     picamera.camera.wait_recording(1)
+                while True:
+                    picamera.camera.wait_recording(1)
             except KeyboardInterrupt:
                 pass
             finally:
