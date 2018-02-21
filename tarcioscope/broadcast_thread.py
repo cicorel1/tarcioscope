@@ -1,12 +1,12 @@
-from threading import Thread
+from gevent import Greenlet
 
-class BroadcastThread(Thread):
+class BroadcastGreenlet(Greenlet):
     def __init__(self, converter, websocket):
         super().__init__()
         self.converter = converter
         self.websocket = websocket
 
-    def run(self):
+    def _run(self):
         try:
             print('Reading into a buffer')
             while True:
