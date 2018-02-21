@@ -4,18 +4,18 @@ import os
 from subprocess import Popen, PIPE
 
 class BroadcastOutput(object):
-    def __init__(self, camera):
+    def __init__(self, picamera):
         print('Spawning background conversion process')
         self.converter = Popen([
             'avconv',
             '-f', 'rawvideo',
             '-pix_fmt', 'yuv420p',
-            '-s', '%dx%d' % camera.camera.resolution,
-            '-r', str(float(camera.camera.framerate)),
+            '-s', '%dx%d' % picamera.camera.resolution,
+            '-r', str(float(picamera.camera.framerate)),
             '-i', '-',
             '-f', 'mpeg1video',
             '-b', '800k',
-            '-r', str(float(camera.camera.framerate)),
+            '-r', str(float(picamera.camera.framerate)),
             '-'],
             stdin=PIPE, stdout=PIPE, stderr=io.open(os.devnull, 'wb'),
             shell=False, close_fds=True)
