@@ -1,11 +1,12 @@
 import io
 import os
+import logging
 
 from subprocess import Popen, PIPE
 
 class BroadcastOutput(object):
     def __init__(self, picamera):
-        print('Spawning background conversion process')
+        logging.info('Spawning background conversion process')
         self.converter = Popen([
             'avconv',
             '-f', 'rawvideo',
@@ -24,6 +25,6 @@ class BroadcastOutput(object):
         self.converter.stdin.write(b)
 
     def flush(self):
-        print('Waiting for background conversion process to exit')
+        logging.info('Waiting for background conversion process to exit')
         self.converter.stdin.close()
         self.converter.wait()

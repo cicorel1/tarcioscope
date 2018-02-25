@@ -1,3 +1,4 @@
+import logging
 import picamera
 
 from datetime import datetime
@@ -19,26 +20,25 @@ class PiCameraWrapper(object):
         self.camera.vflip = VFLIP
         self.camera.hflip = HFLIP
         self.camera.start_preview()
+        logging.info('Camera setup: Resoltuion[%s] | Meter mode[%s] | Frame rate[%s] | Exposure mode[%s] | ISO[%s]', resolution, meter_mode, FRAMERATE, exposure_mode, iso)
 
     def start_streaming(self, output):
-        print('Starting video capture')
+        logging.info('Starting video capture')
         self.camera.start_recording(output, format='yuv')
 
     def stop_streaming(self):
-        print('Stopping video capture')
+        logging.info('Stopping video capture')
         self.camera.stop_recording()
 
     def snap(self):
-        print('Camera recording status: %s' % self.camera.recording)
+        logging.info('Camera recording status: %s' % self.camera.recording)
 
         if self.camera.recording:
-            print('Stopping camera', end='...')
+            logging.info('Stopping camera')
             self.stop_streaming()
-            print('done!')
+            logging.info('Camera stopped!')
 
         file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
-        print('Capturing image to "%s"' % file_name)
-
-        sleep(2)
+        logging.info('Capturing image to "%s"', file_name)
 
         self.camera.capture(file_name, format='png')
