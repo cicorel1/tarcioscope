@@ -1,9 +1,8 @@
-import logging
-
 from time import sleep
 from struct import Struct
 from geventwebsocket import WebSocketApplication
 
+from logger import log
 from pi_camera_wrapper import PiCameraWrapper
 from broadcast_output import BroadcastOutput
 from broadcast_greenlet import BroadcastGreenlet
@@ -20,11 +19,11 @@ class PiCameraStreamApplication(WebSocketApplication):
         self.output = BroadcastOutput(self.picamera)
         self.broadcast_greenlet = BroadcastGreenlet(self.output.converter, self.ws)
         sleep(1) # camera warm-up
-        logging.info('Camera warmed up.')
+        log('Camera warmed up.')
 
     def on_open(self):
         jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, FRAME_WIDTH, FRAME_HEIGHT)
-        logging.info("Connection opened. Sending header '%s'", jsmpeg_header)
+        log("Connection opened. Sending header '%s'" % jsmpeg_header)
         self.ws.send(jsmpeg_header)
 
         try:
@@ -40,5 +39,5 @@ class PiCameraStreamApplication(WebSocketApplication):
             self.on_close(None)
 
     def on_close(self, reason):
-        logging.info('Closing socket. Reason: %s', reason)
+        log('Closing socket. Reason: %s' % reason)
         self.picamera.stop_streaming()
