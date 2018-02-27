@@ -1,16 +1,17 @@
-import logging
+from geventwebsocket import WebSocketServer, Resource
 
+from logger import log
+from pi_camera_web_application import handle_config_endpoint
 from pi_camera_stream_application import PiCameraStreamApplication
 
-WS_HOST = '0.0.0.0'
+HOST = '0.0.0.0'
 WS_PORT = 9000
 
-if __name__ == "__main__":
-    from geventwebsocket import WebSocketServer, Resource
+resource = Resource([
+    ('/', PiCameraStreamApplication),
+    ('/config', handle_config_endpoint)
+])
 
-    resource = Resource([('/', PiCameraStreamApplication)])
-    websocket_server = WebSocketServer((WS_HOST, WS_PORT), resource)
-
-    logging.info('Starting WebSocket server at %s:%s', WS_HOST, WS_PORT)
-
-    websocket_server.serve_forever()
+if __name__ == '__main__':
+    ws_server = WebSocketServer((HOST, WS_PORT), resource, debug=False)
+    ws_server.serve_forever()

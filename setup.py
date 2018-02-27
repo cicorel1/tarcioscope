@@ -6,6 +6,7 @@ requires = [
     'gevent',
     'gevent-websocket',
     'picamera',
+    'gunicorn'
 ]
 
 tests_require = [
