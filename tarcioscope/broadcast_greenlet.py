@@ -8,14 +8,15 @@ class BroadcastGreenlet(Greenlet):
         self.websocket = websocket
 
     def _run(self):
-        try:
-            log('Reading into a buffer')
-            while True:
-                buf = self.converter.stdout.read(512)
-                if buf:
-                    self.websocket.send(buf)
-                elif self.converter.poll() is not None:
-                    break
-        finally:
-            log('Closing converter')
-            self.converter.stdout.close()
+        if not self.websocket.closed:
+            log('WebSocket connection is open. Streaming...')
+            try:
+                while True:
+                    buf = self.converter.stdout.read(512)
+                    if buf:
+                        self.websocket.send(buf)
+                    elif self.converter.poll() is not None:
+                        break
+            finally:
+                log('Closing converter')
+                self.converter.stdout.close()
