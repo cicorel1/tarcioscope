@@ -8,7 +8,7 @@ class BroadcastGreenlet(Greenlet):
         self.websocket = websocket
 
     def _run(self):
-        if not self.websocket.closed:
+        if self.websocket.stream is not None:
             log('WebSocket connection is open. Streaming...')
             try:
                 while True:
