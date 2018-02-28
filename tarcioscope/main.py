@@ -4,7 +4,7 @@ from logger import log
 from pi_camera_web_application import handle_config_endpoint
 from pi_camera_stream_application import PiCameraStreamApplication
 
-HOST = 'localhost'
+HOST = '0.0.0.0'
 WS_PORT = 8000
 
 resource = Resource([

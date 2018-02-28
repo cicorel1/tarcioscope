@@ -16,8 +16,6 @@ class PiCameraStreamApplication(WebSocketApplication):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.picamera = PiCameraWrapper(resolution=(FRAME_WIDTH, FRAME_HEIGHT))
-        self.output = BroadcastOutput(self.picamera)
-        self.broadcast_greenlet = BroadcastGreenlet(self.output.converter, self.ws)
         sleep(1) # camera warm-up
         log('Camera warmed up.')
 
@@ -27,9 +25,11 @@ class PiCameraStreamApplication(WebSocketApplication):
         self.ws.send(jsmpeg_header)
 
         try:
-            self.picamera.start_streaming(self.output)
-            self.broadcast_greenlet.start()
-            self.broadcast_greenlet.join()
+            output = BroadcastOutput(self.picamera)
+            broadcast_greenlet = BroadcastGreenlet(output.converter, self.ws)
+            self.picamera.start_streaming(output)
+            broadcast_greenlet.start()
+            broadcast_greenlet.join()
 
             while True:
                 self.picamera.camera.wait_recording(1)
