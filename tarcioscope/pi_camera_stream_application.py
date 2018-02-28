@@ -30,8 +30,8 @@ class PiCameraStreamApplication(WebSocketApplication):
 
         try:
             self.picamera.start_streaming(self.output)
-            self.broadcast_greenlet.start_later(1)
-            # self.broadcast_greenlet.join()
+            self.broadcast_greenlet.start(1)
+            self.broadcast_greenlet.join()
 
             while True:
                 self.picamera.camera.wait_recording(1)

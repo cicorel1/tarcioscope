@@ -18,5 +18,5 @@ class BroadcastGreenlet(Greenlet):
                     elif self.converter.poll() is not None:
                         break
             finally:
-                log('Closing converter')
-                self.converter.stdout.close()
+                log('Could not write to websocket. Status: %s' % self.websocket.closed)
+                # self.converter.stdout.close()
