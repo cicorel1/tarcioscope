@@ -13,6 +13,7 @@ JSMPEG_HEADER = Struct('>4sHH')
 
 class PiCameraWebSocket(WebSocket):
     picamera = PiCameraWrapper(resolution=(FRAME_WIDTH, FRAME_HEIGHT))
+    heartbeat_freq = 1
 
     def opened(self):
         jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, FRAME_WIDTH, FRAME_HEIGHT)

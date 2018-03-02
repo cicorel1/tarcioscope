@@ -9,12 +9,14 @@ class BroadcastGreenlet(Greenlet):
 
     def _run(self):
         try:
-            while self.websocket.stream is not None:
+            while True:
                 buf = self.converter.stdout.read(512)
                 if buf:
                     self.websocket.send(buf, binary=True)
                 elif self.converter.poll() is not None:
                     break
+        except BrokenPipeError:
+            pass
         finally:
             log('WebSocket stream is unavailable. Closing socket.')
             self.converter.stdout.close()

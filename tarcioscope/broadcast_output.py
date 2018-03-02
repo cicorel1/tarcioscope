@@ -1,7 +1,7 @@
 import io
 import os
 
-from gevent.subprocess import Popen, PIPE
+from subprocess import Popen, PIPE
 
 from logger import log
 
