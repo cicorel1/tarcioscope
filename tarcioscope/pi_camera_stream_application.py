@@ -9,11 +9,9 @@ from broadcast_greenlet import BroadcastGreenlet
 
 JSMPEG_MAGIC = b'jsmp'
 JSMPEG_HEADER = Struct('>4sHH')
-FRAME_WIDTH = 320
-FRAME_HEIGHT = 240
 
 class PiCameraStreamApplication(WebSocketApplication):
-    picamera = PiCameraWrapper(resolution=(FRAME_WIDTH, FRAME_HEIGHT))
+    picamera = PiCameraWrapper()
     output = BroadcastOutput(picamera)
 
     def __init__(self, *args, **kwargs):
@@ -21,23 +19,24 @@ class PiCameraStreamApplication(WebSocketApplication):
         self.broadcast_greenlet = BroadcastGreenlet(self.output.converter, self.ws)
 
     def on_open(self):
-        jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, FRAME_WIDTH, FRAME_HEIGHT)
+        jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, self.picamera.camera.resolution)
         log("Connection opened. Sending header '%s'" % jsmpeg_header)
         self.ws.send(jsmpeg_header)
 
-        try:
-            self.picamera.start_streaming(self.output)
-            self.broadcast_greenlet.start()
-            self.broadcast_greenlet.join()
+        # try:
+        self.picamera.start_streaming(self.output)
+        self.broadcast_greenlet.start()
+        self.broadcast_greenlet.join()
 
-            while True:
-                self.picamera.camera.wait_recording(1)
-        except KeyboardInterrupt:
-            pass
-        finally:
-            self.on_close(None)
+            # while True:
+            #     self.picamera.camera.wait_recording(1)
+        # except KeyboardInterrupt:
+        #     pass
+        # finally:
+        #     self.on_close(None)
 
     def on_close(self, reason):
         log('Closing socket. Reason: %s' % reason)
+        self.ws.close()
         self.broadcast_greenlet.kill(block=False)
         self.picamera.stop_streaming()
