@@ -4,7 +4,7 @@ from ws4py.websocket import WebSocket
 from logger import log
 from broadcast_output import BroadcastOutput
 from pi_camera_wrapper import PiCameraWrapper
-from broadcast_greenlet import BroadcastGreenlet
+from broadcast_thread import BroadcastThread
 
 FRAME_WIDTH = 320
 FRAME_HEIGHT = 240
@@ -20,16 +20,14 @@ class PiCameraWebSocket(WebSocket):
         log("Connection opened. Sending header '%s'" % jsmpeg_header)
         self.output = BroadcastOutput(self.picamera)
         self.picamera.start_streaming(self.output)
-        self.broadcast_greenlet = BroadcastGreenlet(self.output.converter, self)
+        self.broadcast_thread = BroadcastThread(self.output.converter, self)
         self.send(jsmpeg_header, binary=True)
-        self.broadcast_greenlet.start()
-        self.broadcast_greenlet.join()
+        self.broadcast_thread.start()
 
     def closed(self, code, reason=None):
         log('Closing socket. Reason: %s' % reason)
-        self.output.flush()
         self.picamera.stop_streaming()
-        self.broadcast_greenlet.kill(block=False)
+        self.broadcast_thread.join()
 
     def received_message(self, message):
         log('Received message %s' % message.data)
