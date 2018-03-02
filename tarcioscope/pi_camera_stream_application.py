@@ -19,7 +19,7 @@ class PiCameraStreamApplication(WebSocketApplication):
         self.broadcast_greenlet = BroadcastGreenlet(self.output.converter, self.ws)
 
     def on_open(self):
-        jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, self.picamera.camera.resolution)
+        jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, self.picamera.camera.resolution[0], self.picamera.camera.resolution[1])
         log("Connection opened. Sending header '%s'" % jsmpeg_header)
         self.ws.send(jsmpeg_header)
 

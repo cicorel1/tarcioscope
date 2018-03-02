@@ -22,7 +22,7 @@ class PiCameraWrapper(object):
             self.camera.hflip = HFLIP
             self.camera.start_preview()
             log('##### CAMERA SETUP #####')
-            log('# Resolution[%s]' % resolution)
+            log('# Resolution[%s x %s]' % resolution[:2])
             log('# Meter mode[%s]' % meter_mode)
             log('# Frame rate[%s]' % FRAMERATE)
             log('# Exposure mode[%s]' % exposure_mode)
