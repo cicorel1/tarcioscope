@@ -1,3 +1,6 @@
+from gevent import monkey
+monkey.patch_all()
+
 from geventwebsocket import WebSocketServer, Resource
 
 from logger import log

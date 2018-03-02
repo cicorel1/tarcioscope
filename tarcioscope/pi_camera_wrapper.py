@@ -31,6 +31,11 @@ class PiCameraWrapper(object):
 
         def start_streaming(self, output):
             log('Starting video capture')
+
+            if self.camera.recording:
+                log('Camera already recording. Stopping...')
+                self.stop_streaming()
+
             self.camera.start_recording(output, format='yuv')
 
         def stop_streaming(self):
@@ -43,7 +48,6 @@ class PiCameraWrapper(object):
             if self.camera.recording:
                 log('Stopping camera')
                 self.stop_streaming()
-                log('Camera stopped!')
 
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
             log('Capturing image to "%s"' % file_name)

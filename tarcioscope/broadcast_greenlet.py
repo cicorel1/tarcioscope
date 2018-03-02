@@ -21,4 +21,4 @@ class BroadcastGreenlet(Greenlet):
             self.converter.stdout.close()
             # calling the above is no guarantee that the application on_close will be invoked
             # thus forcing a call here so we can close it all up
-            self.websocket.current_app.on_close(reason='Could not read from stream anymore.')
+            self.websocket.current_app.on_close('Could not read from stream anymore.')
