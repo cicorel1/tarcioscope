@@ -40,7 +40,7 @@ class PiCameraWrapper(object):
 
         def stop_streaming(self):
             log('Stopping video capture')
-            self.camera.stop_recording()
+            self.camera.close()
 
         def snap(self):
             log('Camera recording status: %s' % self.camera.recording)

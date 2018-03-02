@@ -6,7 +6,7 @@ requires = [
     'gevent',
     'gevent-websocket',
     'picamera',
-    'gunicorn'
+    'ws4py'
 ]
 
 tests_require = [
