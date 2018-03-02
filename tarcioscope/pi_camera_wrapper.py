@@ -4,7 +4,6 @@ from logger import log
 from datetime import datetime
 
 METER_MODE = 'spot'
-RESOLUTION = (640, 480)
 FRAMERATE = 24
 VFLIP = False
 HFLIP = False
@@ -40,7 +39,7 @@ class PiCameraWrapper(object):
 
         def stop_streaming(self):
             log('Stopping video capture')
-            self.camera.close()
+            self.camera.stop_recording()
 
         def snap(self):
             log('Camera recording status: %s' % self.camera.recording)
@@ -56,7 +55,7 @@ class PiCameraWrapper(object):
 
     instance = None
 
-    def __new__(self, resolution=RESOLUTION, meter_mode='spot', iso=200, exposure_mode='auto'):
+    def __new__(self, resolution, meter_mode='spot', iso=200, exposure_mode='auto'):
         if not PiCameraWrapper.instance:
             PiCameraWrapper.instance = PiCameraWrapper.__PiCameraWrapper(resolution, meter_mode, iso, exposure_mode)
         return PiCameraWrapper.instance

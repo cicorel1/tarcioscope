@@ -7,7 +7,7 @@ def handle_config_endpoint(env, start_response):
     body = ''
     content_length = int(env.get('CONTENT_LENGTH')) if env.get('CONTENT_LENGTH') else 0
 
-    picamera = PiCameraWrapper()
+    picamera = PiCameraWrapper(resolution=None)
 
     start_response('200 OK', RESPONSE_HEADERS)
 
