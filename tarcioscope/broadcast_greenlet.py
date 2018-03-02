@@ -18,5 +18,5 @@ class BroadcastGreenlet(Greenlet):
         except BrokenPipeError:
             pass
         finally:
-            log('WebSocket stream is unavailable. Closing socket.')
-            self.converter.stdout.close()
+            log('WebSocket stream is unavailable.')
+            # self.converter.stdout.close()
