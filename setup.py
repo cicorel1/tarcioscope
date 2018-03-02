@@ -3,8 +3,6 @@ import os
 from setuptools import setup, find_packages
 
 requires = [
-    'gevent',
-    'gevent-websocket',
     'picamera',
     'ws4py'
 ]
