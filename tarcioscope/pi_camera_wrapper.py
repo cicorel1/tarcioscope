@@ -53,7 +53,10 @@ class PiCameraWrapper(object):
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
             log('Capturing image to "%s"' % file_name)
 
+            self.camera.resolution = 'FHD'
             self.camera.capture(file_name, format='png')
+            self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
+            return file_name
 
     instance = None
 
