@@ -36,8 +36,14 @@ class PiCameraWebApplication(object):
 
         if (content_length == 0):
             # start_response('400 Bad Request', RESPONSE_HEADERS)
-            start_response('200 OK')
-            body = json.dumps({ 'resolution': self.picamera.camera.resolution })
+            start_response('200 OK', RESPONSE_HEADERS)
+            json_response = json.dumps({
+                'resolution': self.picamera.camera.resolution,
+                'meter_mode': self.picamera.camera.meter_mode,
+                'iso': self.picamera.camera.iso,
+                'exposure_mode': self.picamera.camera.exposure_mode,
+            })
+            body = json_response.encode('gbk')
         else:
             body = env['wsgi.input'].read(content_length)
 
