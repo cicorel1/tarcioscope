@@ -3,6 +3,8 @@ import picamera
 from logger import log
 from datetime import datetime
 
+from broadcast_output import BroadcastOutput
+
 FRAME_WIDTH = 320
 FRAME_HEIGHT = 240
 METER_MODE = 'spot'
@@ -30,14 +32,15 @@ class PiCameraWrapper(object):
             log('# ISO[%s]' % iso)
             log('########################')
 
-        def start_streaming(self, output):
+        def start_streaming(self):
             log('Starting video capture')
+            self.output = BroadcastOutput(self)
 
             if self.camera.recording:
                 log('Camera already recording. Stopping...')
                 self.stop_streaming()
 
-            self.camera.start_recording(output, format='yuv')
+            self.camera.start_recording(self.output, format='yuv')
 
         def stop_streaming(self):
             log('Stopping video capture')
@@ -47,7 +50,6 @@ class PiCameraWrapper(object):
             log('Camera recording status: %s' % self.camera.recording)
 
             if self.camera.recording:
-                log('Stopping camera')
                 self.stop_streaming()
 
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
@@ -56,6 +58,7 @@ class PiCameraWrapper(object):
             self.camera.resolution = 'FHD'
             self.camera.capture(file_name, format='png')
             self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
+            self.start_streaming()
             return file_name
 
     instance = None

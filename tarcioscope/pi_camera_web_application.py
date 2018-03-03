@@ -7,7 +7,6 @@ from pi_camera_wrapper import PiCameraWrapper
 from pi_camera_web_socket import PiCameraWebSocket
 
 JSON_RESPONSE = [('Content-Type', 'application/json')]
-PNG_RESPONSE = [('Content-Type', 'image/png')]
 
 class PiCameraWebApplication(object):
     def __init__(self, host, port):
@@ -34,8 +33,13 @@ class PiCameraWebApplication(object):
 
     def take_snap(self, env, start_response):
         file_name = self.picamera.snap()
-        start_response('200 OK', PNG_RESPONSE)
-        return open(file_name, "rb").read()
+        data = open(file_name, 'rb').read()
+        start_response('200 OK', [
+            ('Content-Type', 'image/png'),
+            ('Content-Length', str(len(data)))
+        ])
+
+        return [data]
 
     def webapp(self, env, start_response):
         body = ''
