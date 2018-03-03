@@ -2,7 +2,6 @@ import json
 
 from ws4py.server.wsgiutils import WebSocketWSGIApplication
 
-from broadcast_output import BroadcastOutput
 from pi_camera_wrapper import PiCameraWrapper
 from pi_camera_web_socket import PiCameraWebSocket
 
@@ -13,7 +12,6 @@ class PiCameraWebApplication(object):
         self.host = host
         self.port = port
         self.picamera = PiCameraWrapper()
-        self.output = BroadcastOutput(self.picamera)
         self.ws = WebSocketWSGIApplication(handler_cls=PiCameraWebSocket)
         # keep track of connected websocket clients
         # so that we can brodcasts messages sent by one
@@ -23,7 +21,7 @@ class PiCameraWebApplication(object):
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'] == '/ws':
             environ['ws4py.app'] = self
-            self.picamera.start_streaming(self.output)
+            self.picamera.start_streaming()
             return self.ws(environ, start_response)
 
         if environ['PATH_INFO'] == '/snap':
