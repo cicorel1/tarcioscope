@@ -16,7 +16,7 @@ class PiCameraWebSocket(WebSocket):
         jsmpeg_header = JSMPEG_HEADER.pack(JSMPEG_MAGIC, FRAME_WIDTH, FRAME_HEIGHT)
         log("Connection opened. Sending header '%s'" % jsmpeg_header)
 
-        self.broadcast_thread = BroadcastThread(app.picamera.output.converter, self)
+        self.broadcast_thread = BroadcastThread(app.picamera, self)
         self.send(jsmpeg_header, binary=True)
         self.broadcast_thread.start()
 
