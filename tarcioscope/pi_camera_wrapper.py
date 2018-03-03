@@ -3,6 +3,8 @@ import picamera
 from logger import log
 from datetime import datetime
 
+FRAME_WIDTH = 320
+FRAME_HEIGHT = 240
 METER_MODE = 'spot'
 FRAMERATE = 24
 VFLIP = False
@@ -55,7 +57,7 @@ class PiCameraWrapper(object):
 
     instance = None
 
-    def __new__(self, resolution, meter_mode='spot', iso=200, exposure_mode='auto'):
+    def __new__(self, resolution=(FRAME_WIDTH, FRAME_HEIGHT), meter_mode='spot', iso=200, exposure_mode='auto'):
         if not PiCameraWrapper.instance:
             PiCameraWrapper.instance = PiCameraWrapper.__PiCameraWrapper(resolution, meter_mode, iso, exposure_mode)
         return PiCameraWrapper.instance

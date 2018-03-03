@@ -1,21 +1,44 @@
 import json
+
+from ws4py.server.wsgiutils import WebSocketWSGIApplication
+
+from broadcast_output import BroadcastOutput
 from pi_camera_wrapper import PiCameraWrapper
+from pi_camera_web_socket import PiCameraWebSocket
 
 RESPONSE_HEADERS = [('Content-Type', 'application/json')]
 
-def handle_config_endpoint(env, start_response):
-    body = ''
-    content_length = int(env.get('CONTENT_LENGTH')) if env.get('CONTENT_LENGTH') else 0
+class PiCameraWebApplication(object):
+    def __init__(self, host, port):
+        self.host = host
+        self.port = port
+        self.picamera = PiCameraWrapper()
+        self.output = BroadcastOutput(self.picamera)
+        self.ws = WebSocketWSGIApplication(handler_cls=PiCameraWebSocket)
+        # keep track of connected websocket clients
+        # so that we can brodcasts messages sent by one
+        # to all of them. Aren't we cool?
+        self.clients = []
 
-    picamera = PiCameraWrapper(resolution=None)
+    def __call__(self, environ, start_response):
+        if environ['PATH_INFO'] == '/ws':
+            environ['ws4py.app'] = self
+            self.picamera.start_streaming(self.output)
+            return self.ws(environ, start_response)
 
-    start_response('200 OK', RESPONSE_HEADERS)
+        return self.webapp(environ, start_response)
 
-    if (content_length == 0):
-        # start_response('400 Bad Request', RESPONSE_HEADERS)
-        start_response('200 OK')
-        body = json.dumps({ 'resolution': picamera.camera.resolution })
-    else:
-        body = env['wsgi.input'].read(content_length)
+    def webapp(self, env, start_response):
+        body = ''
+        content_length = int(env.get('CONTENT_LENGTH')) if env.get('CONTENT_LENGTH') else 0
 
-    yield body
+        start_response('200 OK', RESPONSE_HEADERS)
+
+        if (content_length == 0):
+            # start_response('400 Bad Request', RESPONSE_HEADERS)
+            start_response('200 OK')
+            body = json.dumps({ 'resolution': self.picamera.camera.resolution })
+        else:
+            body = env['wsgi.input'].read(content_length)
+
+        yield body
