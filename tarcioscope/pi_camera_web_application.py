@@ -26,6 +26,9 @@ class PiCameraWebApplication(object):
             self.picamera.start_streaming(self.output)
             return self.ws(environ, start_response)
 
+        if environ['PATH_INFO'] == '/snap':
+            self.picamera.snap()
+
         return self.webapp(environ, start_response)
 
     def webapp(self, env, start_response):
