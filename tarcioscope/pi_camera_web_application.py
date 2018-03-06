@@ -48,7 +48,7 @@ class PiCameraWebApplication(object):
         file_name = self.picamera.snap()
         data = open(file_name, 'rb').read()
         start_response(HTTP_200_OK, self.headers(data_length=len(data), content_type='image/png'))
-        return [data]
+        yield [data]
 
     def webapp(self, env, start_response):
         body = ''
@@ -56,7 +56,7 @@ class PiCameraWebApplication(object):
 
         if (env.get('REQUEST_METHOD') == 'OPTIONS'):
             start_response(HTTP_200_OK, self.headers())
-            return
+            yield body
 
         if (content_length != 0):
             body = env['wsgi.input'].read(content_length)
@@ -76,6 +76,6 @@ class PiCameraWebApplication(object):
             'exposure_mode': self.picamera.camera.exposure_mode,
         })
 
-        start_response(HTTP_200_OK, self.headers(data_length=len(json_response)))
         body = json_response.encode('gbk')
-        return body
+        start_response(HTTP_200_OK, self.headers(data_length=len(body)))
+        yield body
