@@ -32,13 +32,17 @@ class PiCameraWebApplication(object):
         return self.webapp(environ, start_response)
 
     def headers(self, data_length=0, content_type='application/json'):
-        return [
+        headers_to_send = [
             (CONTENT_TYPE, content_type),
-            (CONTENT_LENGTH, str(data_length)),
             ('Access-Control-Allow-Origin', '*'),
             ('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'),
             ('Access-Control-Allow-Headers', '%s, %s' % (CONTENT_TYPE, CONTENT_LENGTH))
         ]
+
+        if data_length > 0:
+            headers_to_send.append((CONTENT_LENGTH, str(data_length)))
+
+        return headers_to_send
 
     def take_snap(self, env, start_response):
         file_name = self.picamera.snap()
@@ -51,7 +55,7 @@ class PiCameraWebApplication(object):
         content_length = int(env.get('CONTENT_LENGTH')) if env.get('CONTENT_LENGTH') else 0
 
         if (env.get('REQUEST_METHOD') == 'OPTIONS'):
-            start_response(HTTP_200_OK, self.headers(data_length=0))
+            start_response(HTTP_200_OK, self.headers())
             return
 
         if (content_length != 0):
@@ -72,7 +76,6 @@ class PiCameraWebApplication(object):
             'exposure_mode': self.picamera.camera.exposure_mode,
         })
 
+        start_response(HTTP_200_OK, self.headers(data_length=len(json_response)))
         body = json_response.encode('gbk')
-
-        start_response(HTTP_200_OK, self.headers(data_length=len(body)))
         return body
