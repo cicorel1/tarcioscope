@@ -5,7 +5,10 @@ from ws4py.server.wsgiutils import WebSocketWSGIApplication
 from pi_camera_wrapper import PiCameraWrapper
 from pi_camera_web_socket import PiCameraWebSocket
 
-JSON_RESPONSE = [('Content-Type', 'application/json')]
+JSON_RESPONSE = [
+    ('Content-Type', 'application/json'),
+    ('Access-Control-Allow-Origin', '*')
+]
 
 class PiCameraWebApplication(object):
     def __init__(self, host, port):
@@ -45,15 +48,24 @@ class PiCameraWebApplication(object):
 
         start_response('200 OK', JSON_RESPONSE)
 
-        if (content_length == 0):
-            json_response = json.dumps({
-                'resolution': self.picamera.camera.resolution,
-                'meter_mode': self.picamera.camera.meter_mode,
-                'iso': self.picamera.camera.iso,
-                'exposure_mode': self.picamera.camera.exposure_mode,
-            })
-            body = json_response.encode('gbk')
-        else:
+        if (content_length != 0):
             body = env['wsgi.input'].read(content_length)
+            json_body = json.loads(body.decode('gbk'))
+            for key in json_body.keys():
+                if key == 'exposure_mode':
+                    self.picamera.camera.exposure_mode = json_body[key]
+                elif key == 'iso':
+                    self.picamera.camera.iso = json_body[key]
+                else:
+                    self.picamera.camera.meter_mode = json_body[key]
+
+        json_response = json.dumps({
+            'resolution': self.picamera.camera.resolution,
+            'meter_mode': self.picamera.camera.meter_mode,
+            'iso': self.picamera.camera.iso,
+            'exposure_mode': self.picamera.camera.exposure_mode,
+        })
+
+        body = json_response.encode('gbk')
 
         yield body
