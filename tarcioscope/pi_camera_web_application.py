@@ -32,7 +32,7 @@ class PiCameraWebApplication(object):
         return self.webapp(environ, start_response)
 
     def headers(self, data_length=0, content_type='application/json'):
-        [
+        return [
             (CONTENT_TYPE, content_type),
             (CONTENT_LENGTH, str(data_length)),
             ('Access-Control-Allow-Origin', '*'),
