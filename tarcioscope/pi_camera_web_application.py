@@ -48,7 +48,7 @@ class PiCameraWebApplication(object):
         file_name = self.picamera.snap()
         data = open(file_name, 'rb').read()
         start_response(HTTP_200_OK, self.headers(data_length=len(data), content_type='image/png'))
-        yield [data]
+        yield data
 
     def webapp(self, env, start_response):
         body = ''
