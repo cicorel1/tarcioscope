@@ -5,12 +5,9 @@ from ws4py.server.wsgiutils import WebSocketWSGIApplication
 from pi_camera_wrapper import PiCameraWrapper
 from pi_camera_web_socket import PiCameraWebSocket
 
-JSON_RESPONSE = [
-    ('Content-Type', 'application/json'),
-    ('Access-Control-Allow-Origin', '*'),
-    ('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'),
-    ('Access-Control-Allow-Headers', 'content-type')
-]
+HTTP_200_OK = '200 OK'
+CONTENT_TYPE = 'Content-Type'
+CONTENT_LENGTH = 'Content-Length'
 
 class PiCameraWebApplication(object):
     def __init__(self, host, port):
@@ -34,23 +31,27 @@ class PiCameraWebApplication(object):
 
         return self.webapp(environ, start_response)
 
+    def headers(self, data_length, content_type='application/json'):
+        [
+            (CONTENT_TYPE, content_type),
+            (CONTENT_LENGTH, str(data_length)),
+            ('Access-Control-Allow-Origin', '*'),
+            ('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'),
+            ('Access-Control-Allow-Headers', '%s, %s' % (CONTENT_TYPE, CONTENT_LENGTH))
+        ]
+
     def take_snap(self, env, start_response):
         file_name = self.picamera.snap()
         data = open(file_name, 'rb').read()
-        start_response('200 OK', [
-            ('Content-Type', 'image/png'),
-            ('Content-Length', str(len(data)))
-        ])
-
+        start_response(HTTP_200_OK, self.headers('image/png', len(data)))
         return [data]
 
     def webapp(self, env, start_response):
         body = ''
         content_length = int(env.get('CONTENT_LENGTH')) if env.get('CONTENT_LENGTH') else 0
 
-        start_response('200 OK', JSON_RESPONSE)
-
         if (env.get('REQUEST_METHOD') == 'OPTIONS'):
+            start_response(HTTP_200_OK, self.headers(0))
             return
 
         if (content_length != 0):
@@ -73,4 +74,5 @@ class PiCameraWebApplication(object):
 
         body = json_response.encode('gbk')
 
-        yield body
+        start_response(HTTP_200_OK, self.headers(body))
+        return body
