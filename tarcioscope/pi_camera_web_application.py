@@ -7,7 +7,9 @@ from pi_camera_web_socket import PiCameraWebSocket
 
 JSON_RESPONSE = [
     ('Content-Type', 'application/json'),
-    ('Access-Control-Allow-Origin', '*')
+    ('Access-Control-Allow-Origin', '*'),
+    ('Access-Control-Allow-Methods', 'GET, POST, OPTIONS'),
+    ('Access-Control-Allow-Headers', 'content-type')
 ]
 
 class PiCameraWebApplication(object):
@@ -48,6 +50,9 @@ class PiCameraWebApplication(object):
 
         start_response('200 OK', JSON_RESPONSE)
 
+        if (env.get('REQUEST_METHOD') == 'OPTIONS'):
+            return
+
         if (content_length != 0):
             body = env['wsgi.input'].read(content_length)
             json_body = json.loads(body.decode('gbk'))
@@ -55,7 +60,7 @@ class PiCameraWebApplication(object):
                 if key == 'exposure_mode':
                     self.picamera.camera.exposure_mode = json_body[key]
                 elif key == 'iso':
-                    self.picamera.camera.iso = json_body[key]
+                    self.picamera.camera.iso = int(json_body[key])
                 else:
                     self.picamera.camera.meter_mode = json_body[key]
 
