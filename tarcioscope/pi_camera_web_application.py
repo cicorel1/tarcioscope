@@ -15,10 +15,6 @@ class PiCameraWebApplication(object):
         self.port = port
         self.picamera = PiCameraWrapper()
         self.ws = WebSocketWSGIApplication(handler_cls=PiCameraWebSocket)
-        # keep track of connected websocket clients
-        # so that we can brodcasts messages sent by one
-        # to all of them. Aren't we cool?
-        self.clients = []
 
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'] == '/ws':
