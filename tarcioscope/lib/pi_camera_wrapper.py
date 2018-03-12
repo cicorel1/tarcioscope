@@ -26,9 +26,9 @@ class PiCameraWrapper(object):
 
         def start_streaming(self):
             self.stop_streaming()
-            boutput = broadcast_output.BroadcastOutput(self)
+            self.boutput = broadcast_output.BroadcastOutput(self)
             logger.log('Starting video capture')
-            self.camera.start_recording(boutput, format='yuv')
+            self.camera.start_recording(self.boutput, format='yuv')
 
 
         def stop_streaming(self):

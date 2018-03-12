@@ -11,10 +11,10 @@ class BroadcastThread(Thread):
     def run(self):
         try:
             while not self.websocket_server.terminated:
-                buf = self.picamera.output.converter.stdout.read1(32768)
+                buf = self.picamera.boutput.converter.stdout.read1(32768)
                 if buf:
                     self.websocket_server.send(buf, binary=True)
-                elif self.picamera.output.converter.poll() is not None:
+                elif self.picamera.boutput.converter.poll() is not None:
                     break
         finally:
             self.picamera.stop_streaming()
