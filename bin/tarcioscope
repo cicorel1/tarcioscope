@@ -1,4 +1,4 @@
 #!/bin/bash
 
 BINPATH=`dirname $0`
-python "$BINPATH/../tarcioscope/main.py" $@
+python -m "$BINPATH/../tarcioscope/main.py" $@
