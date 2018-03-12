@@ -38,5 +38,5 @@ Then upgrade packaging tools and install dependencie with its testing requiremen
 
 ```
 $ pip install --upgrade pip setuptools
-$ pip install -e ".[testing]"
+$ pip install -r requirements.txt
 ```
