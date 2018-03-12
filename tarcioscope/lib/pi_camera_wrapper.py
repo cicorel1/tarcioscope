@@ -25,19 +25,18 @@ class PiCameraWrapper(object):
 
 
         def start_streaming(self):
-            logger.log('Starting video capture')
             self.stop_streaming()
-
             boutput = broadcast_output.BroadcastOutput(self)
+            logger.log('Starting video capture')
             self.camera.start_recording(boutput, format='yuv')
 
 
         def stop_streaming(self):
-            logger.log('Stopping video capture...')
-            if not self.camera.recording:
+            if self.camera.recording:
+                logger.log('Stopping video capture...')
                 self.camera.stop_recording()
             else:
-                logger.log('Camera already stopped. Doing nothing.')
+                logger.log('Camera already stopped. No need to stop.')
 
 
         def snap(self):

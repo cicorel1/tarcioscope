@@ -4,7 +4,7 @@ from ws4py.websocket import WebSocket
 
 from . import logger
 from . import broadcast_thread
-from pi_camera_wrapper import FRAME_WIDTH, FRAME_HEIGHT
+from .pi_camera_wrapper import FRAME_WIDTH, FRAME_HEIGHT
 
 
 JSMPEG_MAGIC = b'jsmp'
