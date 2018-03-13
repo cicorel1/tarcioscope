@@ -13,7 +13,7 @@ class PiCameraWrapper(object):
             self.camera = picamera.PiCamera()
             self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
             self.camera.meter_mode = 'spot'
-            self.camera.frame_rate = 24
+            self.camera.framerate = 24
             self.camera.exposure_mode = 'auto'
             self.camera.iso = 100
             logger.log('##### CAMERA SETUP #####')
