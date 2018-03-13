@@ -19,13 +19,14 @@ class PiCameraWebApplication(object):
         self.host = host
         self.port = port
         self.picamera = pi_camera_wrapper.PiCameraWrapper()
-        self.picamera.start_streaming()
+        #self.picamera.start_streaming()
         self.ws = WebSocketWSGIApplication(handler_cls=pi_camera_web_socket.PiCameraWebSocket)
 
 
     def __call__(self, environ, start_response):
         if environ['PATH_INFO'] == '/ws':
             environ['ws4py.app'] = self
+            self.picamera.start_streaming()
             return self.ws(environ, start_response)
 
         if environ['PATH_INFO'] == '/snap':

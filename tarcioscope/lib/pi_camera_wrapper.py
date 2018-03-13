@@ -35,16 +35,16 @@ class PiCameraWrapper(object):
             if self.camera.recording:
                 logger.log('Stopping video capture...')
                 self.camera.stop_recording()
+                self.boutput = None
             else:
-                logger.log('Camera already stopped. No need to stop.')
+                logger.log('Camera already stopped. Nothing to do.')
 
 
         def snap(self):
-            logger.log('Camera recording status: %s' % self.camera.recording)
             self.stop_streaming()
 
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
-            logger.log('Capturing image to "%s"' % file_name)
+            logger.log('Capturing Full HD image to "%s".' % file_name)
 
             self.camera.resolution = 'FHD'
             self.camera.capture(file_name, format='png')

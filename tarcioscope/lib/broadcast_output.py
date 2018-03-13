@@ -10,7 +10,7 @@ from . import logger
 
 class BroadcastOutput(object):
     def __init__(self, picamera):
-        logger.log('Spawning background conversion process')
+        logger.log('Spawning background conversion process.')
         self.converter = Popen([
             'avconv',
             '-f', 'rawvideo',
