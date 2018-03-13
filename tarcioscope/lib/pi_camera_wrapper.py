@@ -13,6 +13,7 @@ class PiCameraWrapper(object):
             self.camera = picamera.PiCamera()
             self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
             self.camera.meter_mode = 'spot'
+            self.camera.frame_rate = 24
             self.camera.exposure_mode = 'auto'
             self.camera.iso = 100
             logger.log('##### CAMERA SETUP #####')
@@ -41,9 +42,9 @@ class PiCameraWrapper(object):
 
         def snap(self):
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
-            logger.log('Capturing Full HD image to "%s".' % file_name)
-
+            logger.log('Capturing Full HD image...')
             self.camera.capture(file_name, format='png', use_video_port=True, resize=(1920, 1080))
+            logger.log('Finished capturing. File at "%s".' % file_name)
             return file_name
 
 
