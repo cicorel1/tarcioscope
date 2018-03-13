@@ -4,8 +4,8 @@ from datetime import datetime
 from . import logger
 from . import broadcast_output
 
-FRAME_WIDTH = 320
-FRAME_HEIGHT = 240
+FRAME_WIDTH = 800
+FRAME_HEIGHT = 600
 
 class PiCameraWrapper(object):
     class __PiCameraWrapper:
@@ -13,7 +13,6 @@ class PiCameraWrapper(object):
             self.camera = picamera.PiCamera()
             self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
             self.camera.meter_mode = 'spot'
-            self.camera.framerate = 24
             self.camera.exposure_mode = 'auto'
             self.camera.iso = 100
             logger.log('##### CAMERA SETUP #####')
@@ -41,15 +40,10 @@ class PiCameraWrapper(object):
 
 
         def snap(self):
-            self.stop_streaming()
-
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
             logger.log('Capturing Full HD image to "%s".' % file_name)
 
-            self.camera.resolution = 'FHD'
-            self.camera.capture(file_name, format='png')
-            self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
-            self.start_streaming()
+            self.camera.capture(file_name, format='png', use_video_port=True, resize=(1920, 1080))
             return file_name
 
 
