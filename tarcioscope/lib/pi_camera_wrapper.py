@@ -4,8 +4,8 @@ from datetime import datetime
 from . import logger
 from . import broadcast_output
 
-FRAME_WIDTH = 800
-FRAME_HEIGHT = 600
+FRAME_WIDTH = 640
+FRAME_HEIGHT = 480
 
 class PiCameraWrapper(object):
     class __PiCameraWrapper:
@@ -13,9 +13,9 @@ class PiCameraWrapper(object):
             self.camera = picamera.PiCamera()
             self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
             self.camera.meter_mode = 'spot'
-            self.camera.framerate = 24
             self.camera.exposure_mode = 'auto'
             self.camera.iso = 100
+            self.camera.framerate = 24
             logger.log('##### CAMERA SETUP #####')
             logger.log('# Resolution[%s x %s]' % self.camera.resolution[:2])
             logger.log('# Meter mode[%s]' % self.camera.meter_mode)

@@ -19,7 +19,6 @@ class PiCameraWebApplication(object):
         self.host = host
         self.port = port
         self.picamera = pi_camera_wrapper.PiCameraWrapper()
-        #self.picamera.start_streaming()
         self.ws = WebSocketWSGIApplication(handler_cls=pi_camera_web_socket.PiCameraWebSocket)
 
 
@@ -77,7 +76,6 @@ class PiCameraWebApplication(object):
                     self.picamera.camera.meter_mode = json_body[key]
 
         json_response = json.dumps({
-            'resolution': self.picamera.camera.resolution,
             'meter_mode': self.picamera.camera.meter_mode,
             'iso': self.picamera.camera.iso,
             'exposure_mode': self.picamera.camera.exposure_mode,
