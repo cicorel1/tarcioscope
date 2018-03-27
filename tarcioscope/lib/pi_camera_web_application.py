@@ -4,7 +4,7 @@ import json
 from ws4py.server.wsgiutils import WebSocketWSGIApplication
 
 
-from . import pi_camera_wrapper
+# from . import pi_camera_wrapper
 from . import pi_camera_web_socket
 
 
@@ -60,25 +60,25 @@ class PiCameraWebApplication(object):
 
         if (env.get('REQUEST_METHOD') == 'OPTIONS'):
             start_response(HTTP_200_OK, self.headers())
+            yield body.encode(BYTE_CONVERSION)
+        else:
+            if (content_length != 0):
+                body = env['wsgi.input'].read(content_length)
+                json_body = json.loads(body.decode(BYTE_CONVERSION))
+                for key in json_body.keys():
+                    if key == 'exposure_mode':
+                        self.picamera.camera.exposure_mode = json_body[key]
+                    elif key == 'iso':
+                        self.picamera.camera.iso = int(json_body[key])
+                    else:
+                        self.picamera.camera.meter_mode = json_body[key]
+
+            json_response = json.dumps({
+                'meter_mode': self.picamera.camera.meter_mode,
+                'iso': self.picamera.camera.iso,
+                'exposure_mode': self.picamera.camera.exposure_mode,
+            })
+
+            body = json_response.encode(BYTE_CONVERSION)
+            start_response(HTTP_200_OK, self.headers(data_length=len(body)))
             yield body
-
-        if (content_length != 0):
-            body = env['wsgi.input'].read(content_length)
-            json_body = json.loads(body.decode(BYTE_CONVERSION))
-            for key in json_body.keys():
-                if key == 'exposure_mode':
-                    self.picamera.camera.exposure_mode = json_body[key]
-                elif key == 'iso':
-                    self.picamera.camera.iso = int(json_body[key])
-                else:
-                    self.picamera.camera.meter_mode = json_body[key]
-
-        json_response = json.dumps({
-            'meter_mode': self.picamera.camera.meter_mode,
-            'iso': self.picamera.camera.iso,
-            'exposure_mode': self.picamera.camera.exposure_mode,
-        })
-
-        body = json_response.encode(BYTE_CONVERSION)
-        start_response(HTTP_200_OK, self.headers(data_length=len(body)))
-        yield body
