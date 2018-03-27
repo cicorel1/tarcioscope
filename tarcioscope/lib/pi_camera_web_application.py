@@ -4,7 +4,7 @@ import json
 from ws4py.server.wsgiutils import WebSocketWSGIApplication
 
 
-# from . import pi_camera_wrapper
+from . import pi_camera_wrapper
 from . import pi_camera_web_socket
 
 
