@@ -1,4 +1,5 @@
-from ws4py.server.geventserver import WSGIServer
+from wsgiref.simple_server import make_server
+
 from lib import pi_camera_web_application
 
 
@@ -7,5 +8,5 @@ PORT = 8000
 
 
 if __name__ == '__main__':
-    ws_server = WSGIServer((HOST, PORT), pi_camera_web_application.PiCameraWebApplication(HOST, PORT))
+    ws_server = make_server(HOST, PORT, pi_camera_web_application.PiCameraWebApplication())
     ws_server.serve_forever()

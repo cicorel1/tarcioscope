@@ -15,9 +15,7 @@ CONTENT_LENGTH = 'Content-Length'
 
 
 class PiCameraWebApplication(object):
-    def __init__(self, host, port):
-        self.host = host
-        self.port = port
+    def __init__(self):
         self.picamera = pi_camera_wrapper.PiCameraWrapper()
         self.ws = WebSocketWSGIApplication(handler_cls=pi_camera_web_socket.PiCameraWebSocket)
 
