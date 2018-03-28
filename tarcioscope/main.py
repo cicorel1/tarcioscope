@@ -1,17 +1,16 @@
-from wsgiref.simple_server import make_server
-from ws4py.server.wsgirefserver import WSGIServer, WebSocketWSGIRequestHandler
-from ws4py.server.wsgiutils import WebSocketWSGIApplication
+import socketserver
+from http import server
 
-from lib import pi_camera_web_application
+from lib.streaming_handler import StreamingHandler
 
 
 HOST = '0.0.0.0'
 PORT = 8000
 
+class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
+    allow_reuse_address = True
+    daemon_threads = True
 
 if __name__ == '__main__':
-    ws_server = make_server(HOST, PORT, server_class=WSGIServer,
-                            handler_class=WebSocketWSGIRequestHandler,
-                            app=pi_camera_web_application.PiCameraWebApplication())
-    ws_server.initialize_websockets_manager()
-    ws_server.serve_forever()
+    server = StreamingServer((HOST, PORT), StreamingHandler)
+    server.serve_forever()

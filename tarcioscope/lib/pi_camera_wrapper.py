@@ -1,11 +1,13 @@
 import picamera
 from datetime import datetime
 
+
 from . import logger
-from . import broadcast_output
+
 
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
+
 
 class PiCameraWrapper(object):
     class __PiCameraWrapper:
@@ -24,18 +26,16 @@ class PiCameraWrapper(object):
             logger.log('########################')
 
 
-        def start_streaming(self):
+        def start_streaming(self, output):
             self.stop_streaming()
-            self.boutput = broadcast_output.BroadcastOutput(self)
             logger.log('Starting video capture')
-            self.camera.start_recording(self.boutput, format='yuv')
+            self.camera.start_recording(output, format='yuv')
 
 
         def stop_streaming(self):
             if self.camera.recording:
                 logger.log('Stopping video capture...')
                 self.camera.stop_recording()
-                self.boutput = None
             else:
                 logger.log('Camera already stopped. Nothing to do.')
 
