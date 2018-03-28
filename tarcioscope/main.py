@@ -1,7 +1,7 @@
 import socketserver
 from http import server
 
-from lib.streaming_handler import StreamingHandler
+from lib import streaming_handler
 
 
 HOST = '0.0.0.0'
@@ -12,5 +12,5 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     daemon_threads = True
 
 if __name__ == '__main__':
-    server = StreamingServer((HOST, PORT), StreamingHandler)
+    server = StreamingServer((HOST, PORT), streaming_handler.StreamingHandler)
     server.serve_forever()

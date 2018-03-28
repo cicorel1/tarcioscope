@@ -1,15 +1,15 @@
 import json
 from http import server
 
-from logger import log
-from streaming_output import StreamingOutput
-from pi_camera_wrapper import PiCameraWrapper
+from . import logger
+from . import streaming_output
+from . import pi_camera_wrapper
 
 
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def __init__(self):
-        self.output = StreamingOutput()
-        self.picamera = PiCameraWrapper()
+        self.output = streaming_output.StreamingOutput()
+        self.picamera = pi_camera_wrapper.PiCameraWrapper()
         self.picamera.start_streaming(self.output)
 
 
@@ -77,7 +77,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.wfile.write(b'\r\n')
             except Exception as e:
                 self.picamera.stop_streaming()
-                log('Removed streaming client %s: %s', self.client_address, str(e))
+                logger.log('Removed streaming client %s: %s', self.client_address, str(e))
 
     def camera_configuration(self):
         return json.dumps({
