@@ -19,6 +19,7 @@ class PiCameraWrapper(object):
             self.camera.exposure_mode = 'auto'
             self.camera.iso = 100
             self.camera.framerate = 24
+            self.output = streaming_output.StreamingOutput()
             logger.log('##### CAMERA SETUP #####')
             logger.log('# Resolution[%s x %s]' % self.camera.resolution[:2])
             logger.log('# Meter mode[%s]' % self.camera.meter_mode)
@@ -29,7 +30,6 @@ class PiCameraWrapper(object):
 
         def start_streaming(self):
             self.stop_streaming()
-            self.output = streaming_output.StreamingOutput()
             logger.log('Starting video capture')
             self.camera.start_recording(self.output, format='mjpeg')
 
@@ -38,16 +38,20 @@ class PiCameraWrapper(object):
             if self.camera.recording:
                 logger.log('Stopping video capture...')
                 self.camera.stop_recording()
-                self.output = None
             else:
                 logger.log('Camera already stopped. Nothing to do.')
 
 
         def snap(self):
+            self.stop_streaming()
+
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')
-            logger.log('Capturing Full HD image...')
-            self.camera.capture(file_name, format='png', use_video_port=True, resize=(1640, 1232))
-            logger.log('Finished capturing. File at "%s".' % file_name)
+            logger.log('Capturing Full HD image to "%s".' % file_name)
+
+            self.camera.resolution = 'FHD'
+            self.camera.capture(file_name, format='png')
+            self.camera.resolution = (FRAME_WIDTH, FRAME_HEIGHT)
+            self.start_streaming()
             return file_name
 
 
