@@ -12,8 +12,13 @@ class StreamingServer(socketserver.ThreadingMixIn, server.HTTPServer):
     daemon_threads = True
 
 if __name__ == '__main__':
-    picamera = pi_camera_wrapper.PiCameraWrapper()
-    picamera.start_streaming()
+    try:
+        picamera = pi_camera_wrapper.PiCameraWrapper()
+        picamera.start_streaming()
 
-    server = StreamingServer((HOST, PORT), streaming_handler.StreamingHandler)
-    server.serve_forever()
+        server = StreamingServer((HOST, PORT), streaming_handler.StreamingHandler)
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print ('Interrupt recieved; closing server socket')
+        picamera.stop_streaming()
+        server.socket.close()
