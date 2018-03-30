@@ -14,7 +14,8 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
 
     def do_POST(self):
         if self.path == '/config':
-            content_len = int(self.headers.getheader('Content-Length', 0))
+            logger.log('Received CONFIG CHANGE request')
+            content_len = int(self.headers.get('Content-Length', 0))
             post_body = self.rfile.read(content_len)
 
             json_body = json.loads(post_body.decode('gbk'))
