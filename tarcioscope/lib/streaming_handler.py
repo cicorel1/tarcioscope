@@ -87,8 +87,7 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
                     self.wfile.write(frame)
                     self.wfile.write(b'\r\n')
             except Exception as e:
-                PICAMERA.stop_streaming()
-                logger.log('Removed streaming client %s: %s', self.client_address, str(e))
+                logger.log('Removed streaming client %s: %s' % (self.client_address, str(e)))
 
         self.send_error(404)
         self.end_headers()
