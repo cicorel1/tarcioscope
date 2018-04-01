@@ -1,4 +1,4 @@
-`tarcioscope`
+tarcioscope
 ===
 > A simple tool to look at the sky with a PiKon Telescope (a newtonian tube).
 
