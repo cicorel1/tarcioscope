@@ -1,14 +1,11 @@
 import picamera
 from datetime import datetime
 
-
 from . import logger
 from . import streaming_output
 
-
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
-
 
 class PiCameraWrapper(object):
     class __PiCameraWrapper:
@@ -27,12 +24,10 @@ class PiCameraWrapper(object):
             logger.log('# ISO[%s]' % self.camera.iso)
             logger.log('########################')
 
-
         def start_streaming(self):
             self.stop_streaming()
             logger.log('Starting video capture')
             self.camera.start_recording(self.output, format='mjpeg')
-
 
         def stop_streaming(self):
             if self.camera.recording:
@@ -40,7 +35,6 @@ class PiCameraWrapper(object):
                 self.camera.stop_recording()
             else:
                 logger.log('Camera already stopped. Nothing to do.')
-
 
         def snap(self):
             self.stop_streaming()
@@ -54,15 +48,12 @@ class PiCameraWrapper(object):
             self.start_streaming()
             return file_name
 
-
     instance = None
-
 
     def __new__(self):
         if not PiCameraWrapper.instance:
             PiCameraWrapper.instance = PiCameraWrapper.__PiCameraWrapper()
         return PiCameraWrapper.instance
-
 
     def __getattr__(self, name):
         return getattr(self.instance, name)

@@ -6,11 +6,9 @@ from . import pi_camera_wrapper
 
 PICAMERA = pi_camera_wrapper.PiCameraWrapper()
 
-
 class StreamingHandler(server.BaseHTTPRequestHandler):
     def do_OPTIONS(self):
         self.send_response_only(200)
-
 
     def do_POST(self):
         if self.path == '/config':
@@ -35,7 +33,6 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             self.send_header('Content-Length', len(body_response))
             self.end_headers()
             self.wfile.write(body_response)
-
 
     def do_GET(self):
         if self.path == '/snap':

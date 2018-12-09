@@ -19,6 +19,6 @@ if __name__ == '__main__':
         server = StreamingServer((HOST, PORT), streaming_handler.StreamingHandler)
         server.serve_forever()
     except KeyboardInterrupt:
-        print ('Interrupt recieved; closing server socket')
+        print('Interrupt received; closing server socket.')
         picamera.stop_streaming()
         server.socket.close()
