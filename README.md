@@ -1,5 +1,6 @@
 tarcioscope
 ===
+
 > A simple tool to look at the sky with a PiKon Telescope (a newtonian tube).
 
 What you will need
@@ -17,34 +18,34 @@ Getting Started
 
 - Ensure you have virtualenvwrapper setup and a new project is setup for you to workon.
 
-```
-$ pip install virtualenvwrapper
-$ source `which virtualenvwrapper.sh`
+```bash
+pip install virtualenvwrapper
+source `which virtualenvwrapper.sh`
 ```
 
 This will create the folder `$HOME/.virtualenvs`. Then you need to create a project:
 
-```
-$ mkvirtualenv tarcioscope
+```bash
+mkvirtualenv tarcioscope
 ```
 
 Once this repo is cloned, you will need to execute
 
-```
-$ workon tarcioscope
+```bash
+workon tarcioscope
 ```
 
 Then upgrade packaging tools and install dependencies:
 
-```
-$ pip install --upgrade pip setuptools
-$ pip install -r requirements.txt
+```bash
+pip install --upgrade pip setuptools
+pip install -r requirements.txt
 ```
 
 To run the project, simply go from the project's root:
 
-```
-$ ./bin/tarcioscope
+```bash
+./bin/tarcioscope
 ```
 
 It will start a webserver on port 8000 binding to all IP addresses.
