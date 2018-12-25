@@ -1,13 +1,13 @@
 import picamera
 from datetime import datetime
 
-from . import logger
-from . import streaming_output
+from tarcioscope.lib import logger
+from tarcioscope.lib import streaming_output
 
 FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 
-class PiCameraWrapper(object):
+class PiCameraWrapper:
     class __PiCameraWrapper:
         def __init__(self):
             self.camera = picamera.PiCamera()
@@ -57,3 +57,4 @@ class PiCameraWrapper(object):
 
     def __getattr__(self, name):
         return getattr(self.instance, name)
+

@@ -1,20 +1,18 @@
-import json
-from flask import Flask, request, jsonify, stream_with_context, Response
+from flask import Blueprint, request, jsonify, stream_with_context, Response
 
-from lib import logger
-from lib import pi_camera_wrapper
+from tarcioscope.lib.pi_camera_wrapper import PiCameraWrapper
 
-PICAMERA = pi_camera_wrapper.PiCameraWrapper()
+PICAMERA = PiCameraWrapper()
 PICAMERA.start_streaming()
 
-app = Flask(__name__)
+bp = Blueprint('api', __name__, url_prefix='/')
 
-@app.route('/snap')
+@bp.route('/snap')
 def snap():
     data = open(PICAMERA.snap(), 'rb').read()
     return (data, {'Content-Type': 'image/png', 'Content-Length': len(data)})
- 
-@app.route('/config', methods=['GET', 'POST'])
+
+@bp.route('/config', methods=['GET', 'POST'])
 def config():
     if request.method == 'POST':
         json_body = request.get_json()
@@ -29,7 +27,7 @@ def config():
 
     return jsonify(camera_configuration())
 
-@app.route('/stream.mjpg')
+@bp.route('/stream.mjpg')
 def stream():
 
     @stream_with_context
@@ -41,8 +39,8 @@ def stream():
                     frame = PICAMERA.output.frame
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-        except Exception as e:
-            logger.log('Error: %s' % str(e))
+        except Exception as err:
+            app.logger.error('Error: %s' % str(err))
 
     return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
@@ -52,3 +50,4 @@ def camera_configuration():
         'iso': PICAMERA.camera.iso,
         'exposure_mode': PICAMERA.camera.exposure_mode,
     }
+

@@ -1,7 +1,8 @@
 import io
 from threading import Condition
 
-class StreamingOutput(object):
+
+class StreamingOutput:
     def __init__(self):
         self.frame = None
         self.buffer = io.BytesIO()
@@ -17,3 +18,4 @@ class StreamingOutput(object):
                 self.condition.notify_all()
             self.buffer.seek(0)
         return self.buffer.write(buf)
+
