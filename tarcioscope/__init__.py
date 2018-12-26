@@ -11,7 +11,8 @@ def create_app(test_config=None):
         app.logger.error(err)
         pass
 
-    from tarcioscope import api
+    from tarcioscope import api, config
     app.register_blueprint(api.bp)
+    app.register_blueprint(config.bp)
 
     return app

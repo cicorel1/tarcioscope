@@ -9,29 +9,17 @@ bp = Blueprint('api', __name__, url_prefix='/')
 
 @bp.route('/snap')
 def snap():
+    """Snaps a picture in HIRES"""
     data = open(PICAMERA.snap(), 'rb').read()
     return (data, {'Content-Type': 'image/png', 'Content-Length': len(data)})
 
-@bp.route('/config', methods=['GET', 'POST'])
-def config():
-    if request.method == 'POST':
-        json_body = request.get_json()
-
-        for key in json_body.keys():
-            if key == 'exposure_mode':
-                PICAMERA.camera.exposure_mode = json_body[key]
-            elif key == 'iso':
-                PICAMERA.camera.iso = int(json_body[key])
-            else:
-                PICAMERA.camera.meter_mode = json_body[key]
-
-    return jsonify(camera_configuration())
-
 @bp.route('/stream.mjpg')
 def stream():
+    """Stream contents of the camera boundary frames"""
 
     @stream_with_context
     def generate():
+        """Generator function that yields a frame with a content type"""
         try:
             while True:
                 with PICAMERA.output.condition:
@@ -42,12 +30,6 @@ def stream():
         except Exception as err:
             app.logger.error('Error: %s' % str(err))
 
-    return Response(generate(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-def camera_configuration():
-    return {
-        'meter_mode': PICAMERA.camera.meter_mode,
-        'iso': PICAMERA.camera.iso,
-        'exposure_mode': PICAMERA.camera.exposure_mode,
-    }
+    mime_type = 'multipart/x-mixed-replace; boundary=frame')
+    return Response(generate(), mimetype=mime_type)
 
