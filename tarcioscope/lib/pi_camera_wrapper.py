@@ -1,5 +1,5 @@
-import picamera
 from datetime import datetime
+import picamera
 
 from tarcioscope.lib import logger
 from tarcioscope.lib import streaming_output
@@ -8,6 +8,7 @@ FRAME_WIDTH = 640
 FRAME_HEIGHT = 480
 
 class PiCameraWrapper:
+    """Singleton wrapper for the camera"""
     class __PiCameraWrapper:
         def __init__(self):
             self.camera = picamera.PiCamera()
@@ -25,11 +26,13 @@ class PiCameraWrapper:
             logger.log('########################')
 
         def start_streaming(self):
+            """Stopl the camera if streaming and start a new stream"""
             self.stop_streaming()
             logger.log('Starting video capture')
             self.camera.start_recording(self.output, format='mjpeg')
 
         def stop_streaming(self):
+            """Stop the camera if recording"""
             if self.camera.recording:
                 logger.log('Stopping video capture...')
                 self.camera.stop_recording()
@@ -37,6 +40,7 @@ class PiCameraWrapper:
                 logger.log('Camera already stopped. Nothing to do.')
 
         def snap(self):
+            """Stop the camera, change to Full HD resolution and capture a photo"""
             self.stop_streaming()
 
             file_name = '/tmp/%s.png' % datetime.now().strftime('%Y%m%d%H%M%S')

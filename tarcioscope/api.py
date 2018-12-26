@@ -1,5 +1,6 @@
-from flask import Blueprint, request, jsonify, stream_with_context, Response
+from flask import Blueprint, stream_with_context, Response
 
+from tarcioscope.lib.logger import log
 from tarcioscope.lib.pi_camera_wrapper import PiCameraWrapper
 
 PICAMERA = PiCameraWrapper()
@@ -28,7 +29,7 @@ def stream():
                 yield (b'--frame\r\n'
                        b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
         except Exception as err:
-            app.logger.error('Error: %s' % str(err))
+            log('Error: %s' % str(err))
 
     mime_type = 'multipart/x-mixed-replace; boundary=frame'
     return Response(generate(), mimetype=mime_type)

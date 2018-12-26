@@ -6,4 +6,5 @@ logging.basicConfig(
     handlers=[logging.StreamHandler()])
 
 def log(msg):
+    """Wrapper around the 'info' log level from standard logging library"""
     logging.getLogger().info(msg)
