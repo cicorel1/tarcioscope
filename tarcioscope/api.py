@@ -30,6 +30,6 @@ def stream():
         except Exception as err:
             app.logger.error('Error: %s' % str(err))
 
-    mime_type = 'multipart/x-mixed-replace; boundary=frame')
+    mime_type = 'multipart/x-mixed-replace; boundary=frame'
     return Response(generate(), mimetype=mime_type)
 
